@@ -45,7 +45,7 @@ $( document ).ready(function() {
         $("#stop").attr('disabled',false)
         var self = $(this);
         if($(this).text() == ' Start '){
-            $.post('/get-timer', {user_id:1,_token:CSRF_TOKEN,status:'start',time:elapsed_seconds}, function (date) {
+            $.post('/get-timer', {user_id:userId,_token:CSRF_TOKEN,status:'start',time:elapsed_seconds}, function (date) {
                 var data = JSON.parse(date);
                 if(data) {
                     console.log(100);
@@ -56,7 +56,7 @@ $( document ).ready(function() {
             
         }else{
             // console.log(elapsed_seconds);
-            $.post('/get-timer', {user_id:1,_token:CSRF_TOKEN,status:'pause',time:elapsed_seconds}, function (date) {
+            $.post('/get-timer', {user_id:userId,_token:CSRF_TOKEN,status:'pause',time:elapsed_seconds}, function (date) {
                 var data = JSON.parse(date);
                 if(data) {
                     console.log(100);
@@ -69,7 +69,7 @@ $( document ).ready(function() {
     })
 
     $("#stop").click(function(){
-        $.post('/get-timer', {user_id:1,_token:CSRF_TOKEN,status:'stop',time:elapsed_seconds}, function (date) {
+        $.post('/get-timer', {user_id:userId,_token:CSRF_TOKEN,status:'stop',time:elapsed_seconds}, function (date) {
             var data = JSON.parse(date);
             if(data) {
                 $("#stop").attr('disabled', true);
@@ -81,5 +81,57 @@ $( document ).ready(function() {
     if(status == 'start'){
         timer();
     }
+    $("#add-project").click(function () {
+        var start = $("#project-start").val();
+        var end = $("#project-end").val();
+        var name = $("#project-name").val();
+        if(!start || !end || !name){
+            alert('Fill in all filds');
+            return;
+        }
+        $.post('/admin/add-project', {_token:CSRF_TOKEN,name:name,end:end,start:start}, function (date) {
+            var data = JSON.parse(date);
+            if(date){
+                window.location.href =  '/admin'
+            }
+        })
+    })
 
+    $(".user-project").change(function(){
+        var user = $(this).val();
+        var project = $(this).parent().parent().attr('data-id');
+        var usPj = 0
+        if($(this).parent().parent().attr('data-us')){
+            usPj = $(this).parent().parent().attr('data-us');
+        }
+        $.post('/admin/project-user', {_token:CSRF_TOKEN,user:user,project:project,usPj:usPj}, function (date) {
+            var data = JSON.parse(date);
+            if(date){
+                window.location.href =  '/admin'
+            }
+        })
+    })
+
+    $(".remove-project").click(function () {
+        var id = $(this).parent().parent().attr('data-id');
+        $.post('/admin/project-remove', {_token:CSRF_TOKEN,id:id}, function (date) {
+            var data = JSON.parse(date);
+            if(date){
+                window.location.href =  '/admin'
+            }
+        })
+    })
+    $(".edit-project").click(function () {
+        var parent = $(this).parent().parent()
+        var id = parent.attr('data-id');
+        var start = parent.children().eq(2).text();
+        var end =parent.children().eq(3).text();
+        var name = parent.children().eq(1).text();
+        $.post('/admin/project-edit', {_token:CSRF_TOKEN,id:id,name:name,end:end,start:start}, function (date) {
+            var data = JSON.parse(date);
+            if(date){
+                window.location.href =  '/admin'
+            }
+        })
+    })
 });

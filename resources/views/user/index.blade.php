@@ -3,7 +3,9 @@
 @section('content')
     <script>
         var elapsed_seconds = {{$time['s']}};
-        var status = '{{$time['status']}}'
+        var status = '{{$time['status']}}';
+        var userId = {{$time['user_id']}};
+
     </script>
     <div class="container1">
         <div class="row">

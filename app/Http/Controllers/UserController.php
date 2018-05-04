@@ -8,6 +8,7 @@ use App\User;
 use App\Work;
 use App\UserWork;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -15,9 +16,17 @@ class UserController extends Controller
 
     public function index()
     {
+        if(Cookie::get('user')){
+            $user = User::where('id',Cookie::get('user'))->first();
+        }else{
+            return redirect('/login')->withCookie(Cookie::forget('user'));
+        }
 
-
-        $tday = UserWork::where('user_id', 1)->where('status', 'pause')
+        if(!$user){
+            return redirect('/login')->withCookie(Cookie::forget('user'));
+        }
+        $user_id = $user->id;
+        $tday = UserWork::where('user_id', $user->id)->where('status', 'pause')
             ->whereDate('date', '=', Carbon::today()->toDateString())->orderBy('id', 'desc')->first();
         if (!$tday) {
             $work_time = 0;
@@ -27,7 +36,7 @@ class UserController extends Controller
         }
         $time = time() + (4 * 3600);
         $date = date('Y-m-d');
-        $last_status = UserWork::where('date', '>=', $date)->where('user_id', 1)->
+        $last_status = UserWork::where('date', '>=', $date)->where('user_id', $user->id)->
         orderBy('date', 'desc')->first();
         $status = 'yes';
         if ($last_status) {
@@ -58,7 +67,7 @@ class UserController extends Controller
         $week_num = date('w');
         $week_start = date('m-d-Y', strtotime('-' . $week_num . ' days'));
         $works = UserWork::where('date', '>=', $week_start)->where('status', 'stop')
-            ->where('user_id', '1')->get();
+            ->where('user_id', $user->id)->get();
         $ids = array(1,2,3);
         foreach ($ids as $id){
             $mosts[$id] = UserWork::where('date', '>=', $week_start)->where('status', 'stop')
@@ -86,13 +95,36 @@ class UserController extends Controller
         }
 
 
-        $time = array('h'=>date('H:i:s',$work_time),'s'=>$work_time ,'works'=>$works_week, 'most'=>$mos, 'status'=>$status);
+        $time = array('h'=>date('H:i:s',$work_time),'s'=>$work_time ,'works'=>$works_week, 'most'=>$mos, 'status'=>$status, 'user_id'=>$user_id);
         return view('user.index', compact('time'));
     }
 
 
     public function getLogin(){
+        if(Cookie::get('user')){
+            $user = User::where('id',Cookie::get('user'))->first();
+            if($user){
+                return redirect('/');
+            }
+
+        }
         return view('login');
+    }
+
+    public function logout(){
+        return redirect('/login')->withCookie(Cookie::forget('user'));
+    }
+
+    public function postLogin(Request $request){
+        $input = $request->all();
+        $user = User::where('email',$input['email'])->where('password',$input['password'])->first();
+        if($user){
+            Cookie::queue('user', $user->id, 72000);
+            return redirect('/');
+        }else{
+            return redirect('/login');
+        }
+
     }
 
     public function postTimer(Request $request){
