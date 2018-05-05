@@ -69,7 +69,12 @@ class UserController extends Controller
         $week_start = date('m-d-Y', strtotime('-' . $week_num . ' days'));
         $works = UserWork::where('date', '>=', $week_start)->where('status', 'stop')
             ->where('user_id', $user->id)->get();
-        $ids = array(1,2,3);
+
+        $users = User::all();
+        $ids = array();
+        foreach ($users as $user){
+            $ids[]=$user->id;
+        }
         foreach ($ids as $id){
             $mosts[$id] = UserWork::where('date', '>=', $week_start)->where('status', 'stop')
                 ->where('user_id',$id)
@@ -97,7 +102,7 @@ class UserController extends Controller
 
 
         $time = array('h'=>date('H:i:s',$work_time),'s'=>$work_time ,'works'=>$works_week,
-            'most'=>$mos, 'status'=>$status, 'user_id'=>$user_id,'user_role'=>$user_role);
+            'most'=>$mos, 'status'=>$status, 'user_id'=>$user_id,'user_role'=>$user_role, 'users'=>$users);
         return view('user.index', compact('time'));
     }
 

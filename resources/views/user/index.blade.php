@@ -72,7 +72,16 @@
                 <div class="most-body row">
                     @foreach($time['most'] as $key=>$most)
                     <div class="col-xs-12 border">
-                        User {{$key}} {{floor($most/3600)}} hours
+                        @foreach($time['users'] as $user)
+                            @if($user->id == $key)
+                                {{$user->name}}
+                            @endif
+                        @endforeach
+
+                        <span class="margin-left-50">
+                            {{floor($most/3600)}} hours
+                        </span>
+
                     </div>
                     @endforeach
                 </div>

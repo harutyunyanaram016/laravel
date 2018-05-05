@@ -34,8 +34,10 @@ class AdminController extends Controller
 
         $projects = Project::all();
         $users = User::all();
+        $ids = array();
         $user_work = array();
         foreach ($users as $user){
+            $ids[]=$user->id;
             $tday = UserWork::where('user_id', $user->id)
                 ->whereDate('date', '=', Carbon::today()->toDateString())->orderBy('id', 'desc')->first();
 
@@ -79,7 +81,6 @@ class AdminController extends Controller
         }
 
         $user_project = UserProject::all();
-        $ids = array(1,2,3);
         $week_num = date('w');
         $week_start = date('m-d-Y', strtotime('-' . $week_num . ' days'));
         foreach ($ids as $id){
