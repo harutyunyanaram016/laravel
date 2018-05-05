@@ -3,9 +3,9 @@
 @section('content')
     <h2>All Users</h2>
     <div class="btn-toolbar">
-        <a href="/admin/create-user"> <button class="btn btn-primary">New User</button></a>
+        <a href="/admin/create-user"> <button class="btn btn-primary">+</button></a>
     </div>
-    <div class="well">
+
         <table class="table">
             <thead>
             <tr>
@@ -31,7 +31,7 @@
             @endforeach
             </tbody>
         </table>
-    </div>
+
 
     <div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">

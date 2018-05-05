@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 class AdminController extends Controller
 {
     public function index(){
+
         if(Cookie::get('user')){
             $user = User::where('id',Cookie::get('user'))->first();
         }else{

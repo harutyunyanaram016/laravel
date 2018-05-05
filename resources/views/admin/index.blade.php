@@ -57,16 +57,18 @@
 
                             <tbody>
                             @foreach($content['projects'] as $project)
-                                <tr data-id="{{$project->id}}">
+                                <tr  @if(time() < strtotime($project->end_date)) data-id="{{$project->id}}" @endif>
                                     <td>{{$project->id}}</td>
-                                    <td contenteditable>{{$project->name}}</tdcontenteditable>
-                                    <td contenteditable>{{$project->start_date}}</td>
-                                    <td contenteditable>{{$project->end_date}}</td>
+                                    <td @if(time() < strtotime($project->end_date)) contenteditable @endif >{{$project->name}}</tdcontenteditable>
+                                    <td @if(time() < strtotime($project->end_date)) contenteditable @endif >{{$project->start_date}}</td>
+                                    <td @if(time() < strtotime($project->end_date)) contenteditable @endif >{{$project->end_date}}</td>
 
 
                                     <td>
+                                        @if(time() < strtotime($project->end_date))
                                         <a href="javascript:void(0)" class="remove-project"><i class="fa fa-trash" aria-hidden="true"></i></a>
                                         <a href="javascript:void(0)" class="edit-project">Edit</a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

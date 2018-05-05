@@ -2,8 +2,6 @@
 
 @section('content')
     <h2>Login Form</h2>
-
-    {{--<form action="/login" method="post">--}}
         {!! Form::open(['url' => '/login', 'method'=>'post']) !!}
         <div class="container">
             <label for="uname"><b>Email</b></label>
@@ -17,7 +15,7 @@
 
         <div class="container" style="background-color:#f1f1f1">
 
-            <span class="psw">Forgot <a href="/forgot-password">password?</a></span>
+            {{--<span class="psw">Forgot <a href="/forgot-password">password?</a></span>--}}
         </div>
     {!! Form::close() !!}
 @endsection

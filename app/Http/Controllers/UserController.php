@@ -26,7 +26,7 @@ class UserController extends Controller
             return redirect('/login')->withCookie(Cookie::forget('user'));
         }
         $user_id = $user->id;
-        $user_role = $user->user_role;
+        $user_role = $user->role;
         $tday = UserWork::where('user_id', $user->id)->where('status', 'pause')
             ->whereDate('date', '=', Carbon::today()->toDateString())->orderBy('id', 'desc')->first();
         if (!$tday) {
