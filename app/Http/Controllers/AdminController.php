@@ -99,9 +99,44 @@ class AdminController extends Controller
 
         return view('admin.index', compact('content'));
     }
+
+    public function getUsers(){
+        if(Cookie::get('user')){
+            $user = User::where('id',Cookie::get('user'))->first();
+        }else{
+            return redirect('/login')->withCookie(Cookie::forget('user'));
+        }
+
+        if(!$user){
+            return redirect('/login')->withCookie(Cookie::forget('user'));
+        }
+        if($user->role == 'user'){
+            return redirect('/');
+        }
+        $users = User::all();
+        return view('admin.users', compact('users'));
+    }
+
     public function createUser(){
 
         return view('admin.create');
+    }
+    public function addUser(Request $request){
+        if(!$this->isAdmin()){
+            return redirect('/');
+        }
+        $input = $request->all();
+        $user = new User();
+        $user->name = $input['name'];
+        $user->email = $input['email'];
+        $user->password = $input['password'];
+        if($user->save()){
+            return redirect('/admin/users');
+        }else{
+            return redirect('/admin/create-user');
+        }
+
+
     }
     public function deletUser(Request $request){
         if(!$this->isAdmin()){

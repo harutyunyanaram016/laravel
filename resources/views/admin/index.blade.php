@@ -38,6 +38,18 @@
                                     <button class="btn-primary" id="add-project">Add</button>
                                 </div>
                             </div>
+                            <script>
+                                $(function () {
+                                    $("#project-start").datetimepicker({
+                                        format:'YYYY-MM-DD HH:mm:ss',
+                                    });
+                                    $("#project-end").datetimepicker({
+                                        format:'YYYY-MM-DD HH:mm:ss',
+                                    });
+
+
+                                })
+                            </script>
                         </div>
                     </div>
                     <div class="all-projects">
@@ -91,10 +103,10 @@
                                                 @endforeach
                                             </div>
                                             <div class="col-lg-8 border">
-                                                {{$project->name}}
+                                                {{$project->name}} @if(time() > strtotime($project->end_date))<span class="red">Done</span>  @endif
                                             </div>
                                             <div class="col-lg-4">
-                                                <select class="user-project form-control">
+                                                <select @if(time() > strtotime($project->end_date)) disabled @endif class="user-project form-control">
                                                     @foreach($content['users'] as $user)
                                                         <option
                                                                 @foreach($content['user_project'] as $us_pj)
@@ -122,7 +134,7 @@
                                                 @endif
                                             @endforeach
                                         </p>
-                                        <div class="time" data-id="{{$user_work['id']}}">
+                                        <div class="time" data-id="{{$user_work['id']}}" data-status="{{$user_work['status']}}">
                                             <div class="Timer">{{date('H:i:s',$user_work['work'])}}</div>
                                             <div class="status">Work is {{$user_work['status']}}</div>
                                         </div>

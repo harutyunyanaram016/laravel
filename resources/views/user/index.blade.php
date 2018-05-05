@@ -1,4 +1,4 @@
-@extends('.layout')
+@extends('.layout', array('user_role'=>$time['user_role']))
 
 @section('content')
     <script>

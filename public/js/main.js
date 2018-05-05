@@ -1,10 +1,13 @@
 $( document ).ready(function() {
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
     $(".remove-user").click(function () {
-        var id = $(this).parent().parent().children().eq(0).text();
+        var parent = $(this).parent().parent();
+        var id = parent.children().eq(0).text();
 
         $.post('/admin/remove-user', {id:id,_token:CSRF_TOKEN},function (data) {
-            console.log(data);
+            if(data){
+                parent.remove()
+            }
         })
     })
 
@@ -40,6 +43,8 @@ $( document ).ready(function() {
             $('.Timer').text(get_elapsed_time_string(elapsed_seconds));
         }, 1000);
     };
+
+
 
     $("#start").click(function(){
         $("#stop").attr('disabled',false)
